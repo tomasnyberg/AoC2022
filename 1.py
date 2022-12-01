@@ -1,17 +1,7 @@
 import sys
-lines = list(map(str.strip, sys.stdin.readlines()))
+elfsplit = sys.stdin.read().split("\n\n")
+doublesplit = (list(map(lambda x: x.split("\n"), elfsplit)))
+elves = list(map(sum, map(lambda xs: [int(x) for x in xs], doublesplit)))
 
-result = 0
-currtotal = 0
-elves = []
-for line in lines:
-    if line == "":
-        elves.append(currtotal)
-        currtotal = 0
-    else:
-        currtotal+=int(line)
-elves.append(currtotal)
-elves.sort()
-
-print("Part one:", elves[-1])
-print("Part two:", sum(elves[-3:]))
+print("Part one:", max(elves))
+print("Part two:", sum(sorted(elves)[-3:]))
