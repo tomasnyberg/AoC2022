@@ -1,12 +1,26 @@
 import sys
 lines = list(map(str.strip, sys.stdin.readlines()))
 
-
-rockscore = 1
-paperscore = 2
-scissorscore = 3
-
 scores = {'X': 1, 'Y': 2, 'Z': 3}
+beats = {'Y': 'A', 'Z': 'B', 'X': 'C'}
+loses = {'A': 'Y', 'B': 'Z', 'C': 'X'}
+equals = {'X': 'A', 'Y': 'B', 'Z': 'C'}
+
+def part_one():
+    def get_score(a, b):
+        if equals[b] == a:
+            return 3
+        if beats[b] == a:
+            return 6
+        return 0
+    result = 0
+    for line in lines:
+        a, b = line.split()
+        result += get_score(a, b) + scores[b]
+    return result
+print(part_one())
+
+
 result = 0
 for line in lines:
     split = line.split(" ")
