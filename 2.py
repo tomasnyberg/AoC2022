@@ -2,11 +2,9 @@ import sys
 lines = list(map(str.strip, sys.stdin.readlines()))
 
 scores = {'X': 1, 'Y': 2, 'Z': 3}
-beats = {'Y': 'A', 'Z': 'B', 'X': 'C'}
-loses = {'A': 'Y', 'B': 'Z', 'C': 'X'}
-equals = {'X': 'A', 'Y': 'B', 'Z': 'C'}
-
 def part_one():
+    equals = {'X': 'A', 'Y': 'B', 'Z': 'C'}
+    beats = {'Y': 'A', 'Z': 'B', 'X': 'C'}
     def get_score(a, b):
         if equals[b] == a:
             return 3
@@ -18,46 +16,23 @@ def part_one():
         a, b = line.split()
         result += get_score(a, b) + scores[b]
     return result
+
+def part_two():
+    p2scores = {'X': 0, 'Y': 3, 'Z': 6}
+    beatsp2 = {'A':'Y', 'B':'Z', 'C':'X'}
+    loses = {'A': 'Z', 'B': 'X', 'C': 'Y'}
+    equalsp2 = {'A':'X', 'B':'Y', 'C':'Z'}
+    result = 0
+    for line in lines:
+        a, b = line.split()
+        result += p2scores[b]
+        if b == 'X':
+            result += scores[loses[a]]
+        elif b == 'Y':
+            result += scores[equalsp2[a]]
+        else:
+            result += scores[beatsp2[a]]
+    return result
+
 print(part_one())
-
-
-result = 0
-for line in lines:
-    split = line.split(" ")
-    # result += scores[split[1]]
-    if split[1] == 'Y':
-        result += 3
-        if split[0] == 'A':
-            result += 1
-        elif split[0] == 'B':
-            result += 2
-        else:
-            result += 3
-    elif split[1] == 'Z':
-        result += 6
-        if split[0] == 'A':
-            result += 2
-        elif split[0] == 'B':
-            result += 3
-        else:
-            result += 1
-    else:
-        if split[0] == 'A':
-            result += 3
-        elif split[0] == 'B':
-            result += 1
-        else:
-            result += 2
-    #     elif split[1] == "Y":
-    #         result += 6
-    # if split[0] == 'B':
-    #     if split[1] == "Z":
-    #         result += 6
-    #     elif split[1] == "Y":
-    #         result += 3
-    # if split[0] == 'C':
-    #     if split[1] == "X":
-    #         result += 6
-    #     elif split[1] == "Z":
-    #         result += 3
-print(result)
+print(part_two())
