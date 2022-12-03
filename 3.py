@@ -5,12 +5,12 @@ rucksacks = []
 for line in lines:
     rucksacks.append(line)
 result = 0
-for r in rucksacks:
-    a = r[:len(r)//2]
-    b = r[len(r)//2:]
-    aset = set(a)
-    bset = set(b)
-    ch = (aset & bset).pop()
+taken = set()
+for i in range(0,len(rucksacks), 3):
+    chars = set(rucksacks[i])
+    chars &= set(rucksacks[i+1])
+    chars &= set(rucksacks[i+2])
+    ch = chars.pop()
     orded = ord(ch)
     if 65 <= orded <= 90:
         result += orded - 65 + 27
