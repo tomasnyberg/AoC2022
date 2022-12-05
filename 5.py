@@ -12,22 +12,15 @@ for x in crates:
 def solve(part2, crates):
     for line in movelines.split("\n"):
         if line and line[0] == "m":
-            split = (line.split(" "))
-            take = int(split[1])
-            fr = int(split[3])
-            to = int(split[5])
+            take, fr, to = list(map(int, re.findall("\d+", line)))
             if part2:
                 takeboxes = crates[fr-1][-take:]
-                for _ in range(take):
-                    crates[fr-1].pop()
-                for x in takeboxes:
-                    crates[to-1].append(x)
+                crates[fr-1] = crates[fr-1][:-take]
+                crates[to-1] = crates[to-1] + takeboxes
             else:
                 for _ in range(take):
                     taken = crates[fr - 1].pop()
                     crates[to - 1].append(taken)
     return ''.join([x[-1] for x in crates])
-
-# Create a copy of the crates array
 print("Part one:", solve(False, [x[:] for x in crates]))
 print("Part two:", solve(True, [x[:] for x in crates]))
