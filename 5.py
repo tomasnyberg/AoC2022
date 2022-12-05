@@ -1,43 +1,33 @@
-import sys
-lines = list(map(str.strip, sys.stdin.readlines()))
-crates = [
-['S', 'P', 'W', 'N', 'J', 'Z'],
-['T', 'S', 'G'],
-['H', 'L', 'R', 'Q', 'V'],
-['D', 'T', 'S', 'V'],
-['J',' M', 'B', 'D', 'T', 'Z', 'Q'],
-['L', 'Z', 'C', 'D', 'J', 'T', 'W', 'M'],
-['J','T', 'G', 'W', 'M', 'P', 'L'],
-['H','Q','F','B','T','M','G','N'],
-['W','Q','B','P','C','G','D','R']]
-# crates = [
-#     ['N', 'Z'],
-#     ['D', 'C', 'M'],
-#     ['P']
-# ]
+import sys, re
+whole = sys.stdin.read()
+cratepart, movelines = whole.split("\n\n")
+crates = [[] for _ in range(len(re.findall("\d", cratepart.split("\n")[-1])))]
+for line in cratepart.split("\n"):
+    for i in range(1, len(line), 4):
+        if 65 <= ord(line[i]) <= 90:
+            crates[(i-1) // 4].append(line[i])
 for x in crates:
     x.reverse()
-for x in crates:
-    print(x)
-moves = []
-for line in lines:
-    if line and line[0] == "m":
-        split = (line.split(" "))
-        take = int(split[1])
-        fr = int(split[3])
-        to = int(split[5])
-        print("moving", take, "from", fr, "to", to)
-        # take the last take boxes from crates[fr-1] and put them in crates[to-1]
 
-        takeboxes = crates[fr-1][-take:]
-        for _ in range(take):
-            crates[fr-1].pop()
-        for x in takeboxes:
-            crates[to-1].append(x)
-        # for _ in range(take):
-        #     taken = crates[fr - 1].pop()
-        #     crates[to - 1].append(taken)
+def solve(part2, crates):
+    for line in movelines.split("\n"):
+        if line and line[0] == "m":
+            split = (line.split(" "))
+            take = int(split[1])
+            fr = int(split[3])
+            to = int(split[5])
+            if part2:
+                takeboxes = crates[fr-1][-take:]
+                for _ in range(take):
+                    crates[fr-1].pop()
+                for x in takeboxes:
+                    crates[to-1].append(x)
+            else:
+                for _ in range(take):
+                    taken = crates[fr - 1].pop()
+                    crates[to - 1].append(taken)
+    return ''.join([x[-1] for x in crates])
 
-for x in crates:
-    print(x[-1], end="")
-print()
+# Create a copy of the crates array
+print("Part one:", solve(False, [x[:] for x in crates]))
+print("Part two:", solve(True, [x[:] for x in crates]))
