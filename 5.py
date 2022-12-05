@@ -6,21 +6,16 @@ for line in cratepart.split("\n"):
     for i in range(1, len(line), 4):
         if 65 <= ord(line[i]) <= 90:
             crates[(i-1) // 4].append(line[i])
-for x in crates:
-    x.reverse()
+crates = [x[::-1] for x in crates]
 
 def solve(part2, crates):
     for line in movelines.split("\n"):
-        if line and line[0] == "m":
-            take, fr, to = list(map(int, re.findall("\d+", line)))
-            if part2:
-                takeboxes = crates[fr-1][-take:]
-                crates[fr-1] = crates[fr-1][:-take]
-                crates[to-1] = crates[to-1] + takeboxes
-            else:
-                for _ in range(take):
-                    taken = crates[fr - 1].pop()
-                    crates[to - 1].append(taken)
+        take, fr, to = list(map(int, re.findall("\d+", line)))
+        takeboxes = crates[fr-1][-take:]
+        if not part2:
+            takeboxes = takeboxes[::-1]
+        crates[fr-1] = crates[fr-1][:-take]
+        crates[to-1] = crates[to-1] + takeboxes
     return ''.join([x[-1] for x in crates])
 print("Part one:", solve(False, [x[:] for x in crates]))
 print("Part two:", solve(True, [x[:] for x in crates]))
