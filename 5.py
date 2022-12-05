@@ -27,9 +27,16 @@ for line in lines:
         fr = int(split[3])
         to = int(split[5])
         print("moving", take, "from", fr, "to", to)
+        # take the last take boxes from crates[fr-1] and put them in crates[to-1]
+
+        takeboxes = crates[fr-1][-take:]
         for _ in range(take):
-            taken = crates[fr - 1].pop()
-            crates[to - 1].append(taken)
+            crates[fr-1].pop()
+        for x in takeboxes:
+            crates[to-1].append(x)
+        # for _ in range(take):
+        #     taken = crates[fr - 1].pop()
+        #     crates[to - 1].append(taken)
 
 for x in crates:
     print(x[-1], end="")
