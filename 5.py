@@ -12,8 +12,7 @@ def solve(part2, crates):
     for line in movelines.split("\n"):
         take, fr, to = list(map(int, re.findall("\d+", line)))
         takeboxes = crates[fr-1][-take:]
-        if not part2:
-            takeboxes = takeboxes[::-1]
+        if not part2: takeboxes = takeboxes[::-1]
         crates[fr-1] = crates[fr-1][:-take]
         crates[to-1] = crates[to-1] + takeboxes
     return ''.join([x[-1] for x in crates])
