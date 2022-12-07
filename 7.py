@@ -2,33 +2,38 @@ import sys, re
 lines = list(map(str.strip, sys.stdin.readlines()))
 
 dirs = {}
-dirstack = ["/"]
+stack = ["$"]
 for line in lines[2:]:
-    # print(dirs, dirstack)
+    split = line.split(" ")
     if line[0] == '$':
-        split = line.split(" ")
-        if len(split) == 3:
-            goto = split[2]
-            if goto == "..":
-                dirstack.pop()
-            else:
-                dirstack.append(goto)
-    elif line[0] == "d":
-        split = line.split(" ")
-        for idx, d in enumerate(dirstack):
-            if (idx, d) not in dirs:
-                dirs[(idx, d)] = [0, []]
-            dirs[(idx, d)][1].append(split[1])
-    else:
-        split = line.split(" ")
-        for idx, d in enumerate(dirstack):
-            if (idx, d) not in dirs:
-                dirs[(idx, d)] = [0, []]
-            dirs[(idx, d)][0] += int(split[0])
+        if split[1] == 'ls': continue
+        if split[2] == '..':
+            stack.pop()
+        else:
+            stack.append(split[2])
+    # elif line[0] == 'd':
+    elif line[0].isdigit():
+        stackcopy = stack[:]
+        while stackcopy:
+            d = "/".join(stackcopy)
+            dirs[d] = dirs.get(d, 0) + int(line.split(" ")[0])
+            stackcopy.pop()
+total = 0
 result = 0
 for d in dirs:
-    if dirs[d][0] <= 100000:
-        result += dirs[d][0]
-print(result)
+    total += dirs[d]
+    if dirs[d] <= 100000:
+        result += dirs[d]
+print("Part one:", result)
+required = 30000000 - (70000000 - dirs["$"])
+candidates = []
+for d in dirs:
+    if dirs[d] >= required:
+        candidates.append(dirs[d])
+print("Part two:", min(candidates))
+
+
+
+
 
 
