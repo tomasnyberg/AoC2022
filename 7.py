@@ -15,16 +15,16 @@ for line in lines[2:]:
                 dirstack.append(goto)
     elif line[0] == "d":
         split = line.split(" ")
-        for d in dirs:
-            if d not in dirs:
-                dirs[d] = [0, []]
-            dirs[d][1].append(split[1])
+        for idx, d in enumerate(dirstack):
+            if (idx, d) not in dirs:
+                dirs[(idx, d)] = [0, []]
+            dirs[(idx, d)][1].append(split[1])
     else:
         split = line.split(" ")
-        for d in dirstack:
-            if d not in dirs:
-                dirs[d] = [0, []]
-            dirs[d][0] += int(split[0])
+        for idx, d in enumerate(dirstack):
+            if (idx, d) not in dirs:
+                dirs[(idx, d)] = [0, []]
+            dirs[(idx, d)][0] += int(split[0])
 result = 0
 for d in dirs:
     if dirs[d][0] <= 100000:
