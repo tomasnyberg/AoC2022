@@ -12,6 +12,44 @@ def rotateMatrix(matrix):
             matrix[n-1-x][n-1-y] = matrix[n-1-y][x]
             matrix[n-1-y][x] = temp
 
+def dfs(istart, jstart):
+    # up:
+    result = 1
+    up = 0
+    for i in range(istart-1, -1, -1):
+        if matrix[i][jstart] >= matrix[istart][jstart]:
+            good = False
+            up+=1
+            break
+        else:
+            up += 1
+    # down
+    down = 0
+    for i in range(istart+1, len(matrix)):
+        if matrix[i][jstart] >= matrix[istart][jstart]:
+            good = False
+            down += 1
+            break
+        else:
+            down += 1
+    right = 0
+    for j in range(jstart-1, -1, -1):
+        if matrix[istart][j] >= matrix[istart][jstart]:
+            good = False
+            right +=1
+            break
+        else:
+            right += 1
+    left = 0
+    for j in range(jstart+1, len(matrix[0])):
+        if matrix[istart][j] >= matrix[istart][jstart]:
+            good = False
+            left += 1
+            break
+        else:
+            left += 1
+    # print(up, down, left, right)
+    return up * left*down * right
 matrix = [[int(y) for y in l] for l in lines]
 scored = [[0 for _ in l] for l in lines]
 for iter in range(4):
@@ -24,8 +62,14 @@ for iter in range(4):
     for m in [matrix, scored]:
         rotateMatrix(m)
 
+best = 0
+for i in range(len(matrix)):
+    for j in range(len(matrix)):
+        best = max(best, dfs(i, j))
+
 result = 0
 for xs in scored:
     result += sum(xs)
 print("Part one:", result)
 result = 0
+print("Part two:", best)
