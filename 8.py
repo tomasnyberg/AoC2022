@@ -14,26 +14,25 @@ def rotateMatrix(matrix):
 
 matrix = [[int(y) for y in l] for l in lines]
 scored = [[0 for _ in l] for l in lines]
-for i in range(4):
-    for xs in matrix:
-        print(xs)
-    print()
+multiplication = [[1 for _ in l] for l in lines]
+for iter in range(4):
     for i in range(len(matrix)):
         sl = SortedList()
         for j in range(len(matrix)):
+            multiplication[i][j] *= sl.bisect_right(matrix[i][j])
             if not sl or matrix[i][j] > sl[-1]:
                 scored[i][j] = 1
             sl.add(matrix[i][j]) 
     rotateMatrix(matrix)
     rotateMatrix(scored)
+    rotateMatrix(multiplication)
 
-for xs in scored:
-    print(xs)
 
 result = 0
 for xs in scored:
     result += sum(xs)
 print("Part one:", result)
-
-
-# print("Part two:", p2res)
+result = 0
+for xs in multiplication:
+    result = max(max(xs), result)
+print("Part two:", result)
