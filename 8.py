@@ -15,23 +15,15 @@ def rotateMatrix(matrix):
 def dfs(istart, jstart):
     # up:
     result = 1
-    up = 0
-    for i in range(istart-1, -1, -1):
-        if matrix[i][jstart] >= matrix[istart][jstart]:
-            good = False
-            up+=1
-            break
-        else:
-            up += 1
-    # down
-    down = 0
-    for i in range(istart+1, len(matrix)):
-        if matrix[i][jstart] >= matrix[istart][jstart]:
-            good = False
-            down += 1
-            break
-        else:
-            down += 1
+    for start, end, step in [(istart-1, -1, -1), (istart+1, len(matrix), 1)]:
+        curr = 0
+        for i in range(start, end, step):
+            if matrix[i][jstart] >= matrix[istart][jstart]:
+                curr += 1
+                break
+            else:
+                curr += 1
+        result *= curr
     right = 0
     for j in range(jstart-1, -1, -1):
         if matrix[istart][j] >= matrix[istart][jstart]:
@@ -49,7 +41,7 @@ def dfs(istart, jstart):
         else:
             left += 1
     # print(up, down, left, right)
-    return up * left*down * right
+    return result * left * right
 matrix = [[int(y) for y in l] for l in lines]
 scored = [[0 for _ in l] for l in lines]
 for iter in range(4):
