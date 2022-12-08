@@ -1,5 +1,4 @@
 import sys
-from sortedcontainers import SortedList
 lines = list(map(str.strip, sys.stdin.readlines()))
 
 def rotateMatrix(matrix):
@@ -18,23 +17,19 @@ def dfs(istart, jstart):
     for start, end, step in [(istart-1, -1, -1), (istart+1, len(matrix), 1)]:
         curr = 0
         for i in range(start, end, step):
+            curr += 1
             if matrix[i][jstart] >= matrix[istart][jstart]:
-                curr += 1
                 break
-            else:
-                curr += 1
         result *= curr
     for start, end, step in [(jstart-1, -1, -1), (jstart+1, len(matrix[0]), 1)]:
         curr = 0
         for j in range(start, end, step):
+            curr += 1
             if matrix[istart][j] >= matrix[istart][jstart]:
-                curr += 1
                 break
-            else:
-                curr += 1
         result *= curr
     return result
-    
+
 matrix = [[int(y) for y in l] for l in lines]
 scored = [[0 for _ in l] for l in lines]
 for iter in range(4):
@@ -47,14 +42,5 @@ for iter in range(4):
     for m in [matrix, scored]:
         rotateMatrix(m)
 
-best = 0
-for i in range(len(matrix)):
-    for j in range(len(matrix)):
-        best = max(best, dfs(i, j))
-
-result = 0
-for xs in scored:
-    result += sum(xs)
-print("Part one:", result)
-result = 0
-print("Part two:", best)
+print("Part one:", sum(sum(xs) for xs in scored))
+print("Part two:", max(dfs(i, j) for i in range(len(matrix)) for j in range(len(matrix))))
