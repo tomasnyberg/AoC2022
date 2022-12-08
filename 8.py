@@ -3,28 +3,13 @@ lines = list(map(str.strip, sys.stdin.readlines()))
 
 matrix = [[int(y) for y in l] for l in lines]
 
-def rotateMatrix(matrix):
-    n = len(matrix)
-    for x in range(0, int(n / 2)):
-        for y in range(x, n-x-1):
-            temp = matrix[x][y]
-            matrix[x][y] = matrix[y][n-1-x]
-            matrix[y][n-1-x] = matrix[n-1-x][n-1-y]
-            matrix[n-1-x][n-1-y] = matrix[n-1-y][x]
-            matrix[n-1-y][x] = temp
-
 def part_one():
-    scored = [[0 for _ in l] for l in lines]
-    for iter in range(4):
-        for i in range(len(matrix)):
-            biggest = -1
-            for j in range(len(matrix)):
-                if matrix[i][j] > biggest:
-                    scored[i][j] = 1
-                    biggest = matrix[i][j]
-        for m in [matrix, scored]:
-            rotateMatrix(m)
-    return sum(sum(xs) for xs in scored)
+    def check(i1, j1):
+        return all(matrix[i][j1] < matrix[i1][j1] for i in range(i1-1, -1, -1)) or \
+               all(matrix[i][j1] < matrix[i1][j1] for i in range(i1+1, len(matrix))) or \
+               all(matrix[i1][j] < matrix[i1][j1] for j in range(j1-1, -1, -1)) or \
+               all(matrix[i1][j] < matrix[i1][j1] for j in range(j1+1, len(matrix)))
+    return sum(check(i, j) for i in range(len(matrix)) for j in range(len(matrix)))
 
 def part_two():
     def dfs(istart, jstart):
