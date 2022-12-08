@@ -24,24 +24,17 @@ def dfs(istart, jstart):
             else:
                 curr += 1
         result *= curr
-    right = 0
-    for j in range(jstart-1, -1, -1):
-        if matrix[istart][j] >= matrix[istart][jstart]:
-            good = False
-            right +=1
-            break
-        else:
-            right += 1
-    left = 0
-    for j in range(jstart+1, len(matrix[0])):
-        if matrix[istart][j] >= matrix[istart][jstart]:
-            good = False
-            left += 1
-            break
-        else:
-            left += 1
-    # print(up, down, left, right)
-    return result * left * right
+    for start, end, step in [(jstart-1, -1, -1), (jstart+1, len(matrix[0]), 1)]:
+        curr = 0
+        for j in range(start, end, step):
+            if matrix[istart][j] >= matrix[istart][jstart]:
+                curr += 1
+                break
+            else:
+                curr += 1
+        result *= curr
+    return result
+    
 matrix = [[int(y) for y in l] for l in lines]
 scored = [[0 for _ in l] for l in lines]
 for iter in range(4):
