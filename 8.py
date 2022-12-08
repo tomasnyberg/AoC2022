@@ -1,60 +1,41 @@
 import sys
 lines = list(map(str.strip, sys.stdin.readlines()))
 
-nums = []
-for line in lines:
-    curr = []
-    for x in line:
-        curr.append(int(x))
-    nums.append(curr)
+matrix = [[int(y) for y in l] for l in lines]
+nums = matrix
+n, m = len(matrix), len(matrix[0])
 
-def dfs(istart, jstart):
-    # up:
+def score(istart, jstart):
+    dirs = [(-1, 0), (1,0), [0, 1], [0, -1]]
+    def dfs(i, j, di, dj):
+        if i < 0 or j < 0 or i == len(matrix) or j == len(matrix[0]) or matrix[i][j] >= matrix[istart][jstart]:
+            return 0
+        return 1 + dfs(i + di, j +dj, di, dj)
+    results = []
+    for di, dj in dirs:
+        results.append(dfs(istart+di, jstart+dj, di, dj))
+    return results
+
+def visible(i, j):
+    scores = score(i, j)
+    return scores[0] == i or scores[1] == n - i - 1 or scores[2] == m-j-1 or scores[3] == j
+print(score(0, 0))
+print(visible(0, 0))
+
+def scenic(i, j):
     result = 1
-    up = 0
-    for i in range(istart-1, -1, -1):
-        if nums[i][jstart] >= nums[istart][jstart]:
-            good = False
-            up+=1
-            break
-        else:
-            up += 1
-    # down
-    down = 0
-    for i in range(istart+1, len(nums)):
-        if nums[i][jstart] >= nums[istart][jstart]:
-            good = False
-            down += 1
-            break
-        else:
-            down += 1
-    right = 0
-    for j in range(jstart-1, -1, -1):
-        if nums[istart][j] >= nums[istart][jstart]:
-            good = False
-            right +=1
-            break
-        else:
-            right += 1
-    left = 0
-    for j in range(jstart+1, len(nums[0])):
-        if nums[istart][j] >= nums[istart][jstart]:
-            good = False
-            left += 1
-            break
-        else:
-            left += 1
-    print(up, down, left, right)
-    return up * left*down * right
-result = 0
-dirs = [(-1, 0), (1,0), [0, 1], [0, -1]]
-results = []
-print(dfs(1, 2))
+    for x in score(i, j):
+        result *= x
+    return result
+
+p1res = 0
+p2res = 0
 for i in range(len(nums)):
     for j in range(len(nums[0])):
-        results.append(dfs(i, j))
+        if visible(i, j):
+            print(i, j, "is visible")
+            p1res += 1
+        p2res = max(p2res, scenic(i, j))
 
-print(max(results))
-
-# all 4 directions in 2d
-print(dirs)
+print("Part one:", p1res)
+print("Part two:", p2res)
