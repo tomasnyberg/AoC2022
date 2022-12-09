@@ -8,20 +8,13 @@ for line in lines:
 
 def movetail(tailpos, headpos):
     def movetoward(tailpos, headpos, dir):
-        tailpos[dir] += 1 if headpos[dir] > tailpos[dir] else -1
+        if headpos[0] == tailpos[0]:
+            tailpos[1] += 1 if headpos[1] > tailpos[1] else -1
+        elif headpos[1] == tailpos[1]:
+            tailpos[0] += 1 if headpos[0] > tailpos[0] else -1
     dist = abs(headpos[0] - tailpos[0]) + abs(headpos[1] - tailpos[1])
     if dist == 2:
-        dir = 0 if headpos[0] != tailpos[0] else 1
-        if headpos[0] == tailpos[0]:
-            if headpos[1] > tailpos[1]:
-                tailpos[1] += 1
-            else:
-                tailpos[1] -= 1
-        elif headpos[1] == tailpos[1]:
-            if headpos[0] > tailpos[0]:
-                tailpos[0] += 1
-            else:
-                tailpos[0] -= 1
+        movetoward(tailpos, headpos, dir)
     elif dist == 3:
         if abs(headpos[0] - tailpos[0]) == 2:
             if headpos[0] > tailpos[0]:
