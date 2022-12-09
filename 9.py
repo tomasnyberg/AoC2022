@@ -8,43 +8,19 @@ for line in lines:
 
 def movetail(tailpos, headpos):
     def movetoward(tailpos, headpos, dir):
-        if headpos[0] == tailpos[0]:
-            tailpos[1] += 1 if headpos[1] > tailpos[1] else -1
-        elif headpos[1] == tailpos[1]:
-            tailpos[0] += 1 if headpos[0] > tailpos[0] else -1
+        tailpos[dir] += 1 if headpos[dir] > tailpos[dir] else -1
     dist = abs(headpos[0] - tailpos[0]) + abs(headpos[1] - tailpos[1])
     if dist == 2:
+        if headpos[0] != tailpos[0] and headpos[1] != tailpos[1]: return 
+        dir = 1 if headpos[0] == tailpos[0] else 0
         movetoward(tailpos, headpos, dir)
     elif dist == 3:
-        if abs(headpos[0] - tailpos[0]) == 2:
-            if headpos[0] > tailpos[0]:
-                tailpos[0] += 1
-            else:
-                tailpos[0] -= 1
-            if headpos[1] > tailpos[1]:
-                tailpos[1] += 1
-            else:
-                tailpos[1] -= 1
-        else:
-            if headpos[0] > tailpos[0]:
-                tailpos[0] += 1
-            else:
-                tailpos[0] -= 1
-            if headpos[1] > tailpos[1]:
-                tailpos[1] += 1
-            else:
-                tailpos[1] -= 1
+        dir = 0 if headpos[0] > tailpos[0] else 1
+        movetoward(tailpos, headpos, dir)
+        movetoward(tailpos, headpos, 1 - dir)
     elif dist == 4:
-        # Move toward head in both directions
-        if headpos[0] > tailpos[0]:
-            tailpos[0] += 1
-        else:
-            tailpos[0] -= 1
-        if headpos[1] > tailpos[1]:
-            tailpos[1] += 1
-        else:
-            tailpos[1] -= 1
-
+        movetoward(tailpos, headpos, 0)
+        movetoward(tailpos, headpos, 1)
 
 visited = set([(0, 0)])
 headpos = [0, 0]
