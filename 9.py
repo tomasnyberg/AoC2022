@@ -15,18 +15,16 @@ def movetail(tailpos, headpos):
         movetoward(tailpos, headpos, 1)
 
 visitedp1, visitedp2 = [set([(0, 0)]) for _ in range(2)]
-headpos = [0, 0]
-tailposes = [[0, 0] for _ in range(9)]
-mapped = {'U': (0, 1), 'D': (0, -1), 'R': (1, 1), 'L': (1, -1)}
-for d, amount in inputs:
+snake = [[0, 0] for _ in range(10)]
+directions = {'U': (0, 1), 'D': (0, -1), 'R': (1, 1), 'L': (1, -1)}
+for direction, amount in inputs:
     for _ in range(amount):
-        idx, add = mapped[d]
-        headpos[idx] += add
-        movetail(tailposes[-1], headpos)
-        for i in range(len(tailposes) - 1, 0, -1):
-            movetail(tailposes[i-1], tailposes[i])
-        visitedp2.add(tuple(tailposes[0]))
-        visitedp1.add(tuple(tailposes[-1]))
+        idx, add = directions[direction]
+        snake[-1][idx] += add
+        for i in range(len(snake)-1, 0, -1):
+            movetail(snake[i-1], snake[i])
+        visitedp1.add(tuple(snake[-2]))
+        visitedp2.add(tuple(snake[0]))
 
 print("Part one:", len(visitedp1))
 print("Part two:", len(visitedp2))
