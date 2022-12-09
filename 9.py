@@ -1,11 +1,7 @@
 import sys, re
 lines = list(map(str.strip, sys.stdin.readlines()))
 
-inputs = []
-for line in lines:
-    a, b = line.split(" ")
-    inputs.append([a, int(b)])
-
+inputs = [(a, int(b)) for a, b in [line.split(" ") for line in lines]]
 def movetail(tailpos, headpos):
     def movetoward(tailpos, headpos, dir):
         tailpos[dir] += 1 if headpos[dir] > tailpos[dir] else -1
@@ -32,5 +28,5 @@ for d, amount in inputs:
             movetail(tailposes[i-1], tailposes[i])
         visitedp2.add(tuple(tailposes[0]))
         visitedp1.add(tuple(tailposes[-1]))
-print(len(visitedp1))
-print(len(visitedp2))
+print("Part one:", len(visitedp1))
+print("Part two:", len(visitedp2))
