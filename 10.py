@@ -15,9 +15,8 @@ def solve():
             distance = abs((iterations[0] - 1)%40-x)
             grid[(iterations[0]-1)//40][(iterations[0]-1)%40] = ["#","."][distance >= 2]
         if line[0] == 'a':
-            add = int(line.split(" ")[1])
             [cpu() for _ in range(2)]
-            x += add
+            x += int(line.split(" ")[1])
         else:
             cpu()
     return total
@@ -25,10 +24,5 @@ def solve():
 print("Part one:", solve()[0])
 print("Part two:")
 for xs in grid:
-    for x in xs:
-        if x == "#":
-            print(x, end="")
-        else:
-            print(" ", end="")
+    [print(x if x == "#" else " ", end="") for x in xs]
     print()
-
