@@ -24,5 +24,5 @@ def solve():
 print("Part one:", solve()[0])
 print("Part two:")
 for xs in grid:
-    [print(x if x == "#" else " ", end="") for x in xs]
+    [print(chr(0x2588) if x == "#" else " ", end="") for x in xs]
     print()
