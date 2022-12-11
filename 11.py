@@ -19,12 +19,17 @@ for monkey in monkeys:
     monkeylist[-1].append(truethrow)
     monkeylist[-1].append(falsethrow)
 
+gcd = 1
+for i in range(len(monkeylist)):
+    for j in range(len(monkeylist[i][0])):
+        gcd *= monkeylist[i][0][j]
+
 counts = [0 for i in range(len(monkeylist))]
 def round():
     for m in range(len(monkeylist)):
         for i in range(len(monkeylist[m][0])):
             counts[m] += 1
-            curr = monkeylist[m][0][i]
+            curr = monkeylist[m][0][i] % gcd
             if monkeylist[m][1][0] == "+":
                 if monkeylist[m][1][1] == 'old':
                     curr += curr
@@ -38,7 +43,6 @@ def round():
             else:
                 print("invalid state", monkeylist[m], i, curr)
                 return
-            curr //= 3
             toiftrue = monkeylist[m][3]
             toiffalse = monkeylist[m][4]
             if curr % monkeylist[m][2] == 0:
@@ -47,8 +51,10 @@ def round():
                 monkeylist[toiffalse][0].append(curr)
         monkeylist[m][0] = []
 
-for i in range(20):
-    print(i)
+for i in range(10000):
+    if i % 1000 == 0:
+        print(i)
+        print(counts)
     round()
 counts.sort()
 print(counts[-1]*counts[-2])
