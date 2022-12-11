@@ -7,10 +7,7 @@ monkeylist = []
 for monkey in monkeys:
     lines = monkey.split("\n")
     monkeylist.append([])
-    starting = lines[1]
-    # convert this into only numbers Starting items: 76, 66, 74, 87, 70, 56, 51, 66
-    starting = list(map(int,re.findall(r'\d+', starting)))
-    monkeylist[-1].append(starting)
+    monkeylist[-1].append(list(map(int,re.findall(r'\d+', lines[1]))))
     op = lines[2].split(": ")[1].split(" = ")[1].split(" ")[1:]
     monkeylist[-1].append(op)
     divby = int(re.findall(r'\d+', lines[3])[0])
