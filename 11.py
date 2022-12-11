@@ -1,4 +1,5 @@
 import sys, re
+from functools import reduce
 whole_file = sys.stdin.read()
 monkeys = whole_file.split("\n\n")
 
@@ -19,36 +20,20 @@ for monkey in monkeys:
     monkeylist[-1].append(truethrow)
     monkeylist[-1].append(falsethrow)
 
-gcd = 1
-for i in range(len(monkeylist)):
-    for j in range(len(monkeylist[i][0])):
-        gcd *= monkeylist[i][0][j]
-
+divby = reduce(lambda x, y: x*y, reduce(lambda x, y: x+y, [i[0] for i in monkeylist]))
 counts = [0 for i in range(len(monkeylist))]
 def round():
     for m in range(len(monkeylist)):
         for i in range(len(monkeylist[m][0])):
             counts[m] += 1
-            curr = monkeylist[m][0][i] % gcd
-            if monkeylist[m][1][0] == "+":
-                if monkeylist[m][1][1] == 'old':
-                    curr += curr
-                else:
-                    curr += int(monkeylist[m][1][1])
-            elif monkeylist[m][1][0] == "*":
-                if monkeylist[m][1][1] == 'old':
-                    curr *= curr
-                else:
-                    curr *= int(monkeylist[m][1][1])
-            else:
-                print("invalid state", monkeylist[m], i, curr)
-                return
-            toiftrue = monkeylist[m][3]
-            toiffalse = monkeylist[m][4]
+            curr = monkeylist[m][0][i] % divby
+            snd = int(monkeylist[m][1][1]) if monkeylist[m][1][1] != 'old' else curr
+            curr = curr + snd if monkeylist[m][1][0] == "+" else curr * snd
+            to_true, to_false = monkeylist[m][-2:]
             if curr % monkeylist[m][2] == 0:
-                monkeylist[toiftrue][0].append(curr)
+                monkeylist[to_true][0].append(curr)
             else:
-                monkeylist[toiffalse][0].append(curr)
+                monkeylist[to_false][0].append(curr)
         monkeylist[m][0] = []
 
 for i in range(10000):
