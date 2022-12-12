@@ -7,10 +7,8 @@ for monkey in monkeys:
     _, starting, op, test, t, f = monkey.split("\n")
     starting = list(map(int, re.findall(r"\d+", starting)))
     op = op.split(" = ")[1].split(" ")[1:]
-    test = int(test.split(" ")[-1])
+    test, t, f = map(lambda x: int(x.split(" ")[-1]), [test, t, f])
     MOD *= test
-    t = int(t.split(" ")[-1])
-    f = int(f.split(" ")[-1])
     monkey_list.append((starting, op, test, t, f))
 
 def solve(iterations, part_two):
