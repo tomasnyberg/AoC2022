@@ -1,42 +1,33 @@
 import sys, re
-from functools import reduce
-whole_file = sys.stdin.read()
-monkeys = whole_file.split("\n\n")
+monkeys = sys.stdin.read().split("\n\n")
 
-monkeylist = []
+monkey_list = []
 for monkey in monkeys:
-    lines = monkey.split("\n")
-    monkeylist.append([])
-    monkeylist[-1].append(list(map(int,re.findall(r'\d+', lines[1]))))
-    op = lines[2].split(": ")[1].split(" = ")[1].split(" ")[1:]
-    monkeylist[-1].append(op)
-    divby = int(re.findall(r'\d+', lines[3])[0])
-    monkeylist[-1].append(divby)
-    truethrow = int(re.findall(r'\d+', lines[4])[0])
-    falsethrow = int(re.findall(r'\d+', lines[5])[0])
-    monkeylist[-1].append(truethrow)
-    monkeylist[-1].append(falsethrow)
+    _, starting, op, test, t, f = monkey.split("\n")
+    starting = list(map(int, re.findall(r"\d+", starting)))
+    op = op.split(" = ")[1].split(" ")[1:]
+    test = int(test.split(" ")[-1])
+    t = int(t.split(" ")[-1])
+    f = int(f.split(" ")[-1])
+    monkey_list.append((starting, op, test, t, f))
 
-divby = reduce(lambda x, y: x*y, reduce(lambda x, y: x+y, [i[0] for i in monkeylist]))
-counts = [0 for i in range(len(monkeylist))]
-def round():
-    for m in range(len(monkeylist)):
-        for i in range(len(monkeylist[m][0])):
-            counts[m] += 1
-            curr = monkeylist[m][0][i] % divby
-            snd = int(monkeylist[m][1][1]) if monkeylist[m][1][1] != 'old' else curr
-            curr = curr + snd if monkeylist[m][1][0] == "+" else curr * snd
-            to_true, to_false = monkeylist[m][-2:]
-            if curr % monkeylist[m][2] == 0:
-                monkeylist[to_true][0].append(curr)
+counts = [0]*len(monkey_list)
+def cycle():
+    for idx, m in enumerate(monkey_list):
+        while m[0]:
+            counts[idx] += 1
+            item = m[0].pop(0) # fix
+            second = int(m[1][1]) if m[1][1] != 'old' else item
+            item = item * second if m[1][0] == '*' else item + second
+            item //= 3
+            if item % m[2] == 0:
+                monkey_list[m[3]][0].append(item)
             else:
-                monkeylist[to_false][0].append(curr)
-        monkeylist[m][0] = []
+                # print(monkey_list[m[4]])
+                monkey_list[m[4]][0].append(item)
 
-for i in range(10000):
-    if i % 1000 == 0:
-        print(i)
-        print(counts)
-    round()
+for i in range(20):
+    cycle()
 counts.sort()
-print(counts[-1]*counts[-2])
+print(counts)
+print(counts[-1] * counts[-2])
