@@ -21,32 +21,19 @@ def cycle(counts, monkey_list, part_two=False):
             item = m[0].popleft()
             second = int(m[1][1]) if m[1][1] != 'old' else item
             item = item * second if m[1][0] == '*' else item + second
-            if part_two:
-                item %= MOD
-            else:
-                item //= 3
+            item = item % MOD if part_two else item // 3
             if item % m[2] == 0:
                 monkey_list[m[3]][0].append(item)
             else:
                 monkey_list[m[4]][0].append(item)
 
-def biggest_two(counts):
+def solve(iterations, part_two):
+    monkeys = [(deque([x for x in m[0]]), m[1], m[2], m[3], m[4]) for m in monkey_list]
+    counts = [0]*len(monkey_list)
+    for i in range(iterations):
+        cycle(counts, monkeys, part_two)
     counts.sort()
     return counts[-1] * counts[-2]
 
-def part_one():
-    p1monkeys = [(deque([x for x in m[0]]), m[1], m[2], m[3], m[4]) for m in monkey_list]
-    counts = [0]*len(monkey_list)
-    for i in range(20):
-        cycle(counts, p1monkeys, False)
-    return biggest_two(counts)
-
-def part_two():
-    p2monkeys = [(deque([x for x in m[0]]), m[1], m[2], m[3], m[4]) for m in monkey_list]
-    counts = [0]*len(monkey_list)
-    for i in range(10000):
-        cycle(counts, p2monkeys, True)
-    return biggest_two(counts)
-
-print(part_one())
-print(part_two())
+print("Part one:", solve(20, False))
+print("Part two:", solve(10000, True))
