@@ -1,15 +1,14 @@
 import sys, re
-monkeys = sys.stdin.read().split("\n\n")
+monkey_list = sys.stdin.read().split("\n\n")
 
-monkey_list = []
 MOD = 1
-for monkey in monkeys:
-    _, starting, op, test, t, f = monkey.split("\n")
+for i in range(len(monkey_list)):
+    _, starting, op, test, t, f = monkey_list[i].split("\n")
     starting = list(map(int, re.findall(r"\d+", starting)))
     op = op.split(" = ")[1].split(" ")[1:]
     test, t, f = map(lambda x: int(x.split(" ")[-1]), [test, t, f])
     MOD *= test
-    monkey_list.append([starting, op, test, t, f])
+    monkey_list[i] = [starting, op, test, t, f]
 
 def solve(iterations, part_two):
     def cycle(counts, monkey_list, part_two=False):
