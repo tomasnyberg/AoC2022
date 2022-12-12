@@ -3,12 +3,10 @@ lines = list(map(str.strip, sys.stdin.readlines()))
 start = [-1, -1]
 end = [-1, -1]
 
-starts = []
+starts = [[i, j] for i in range(len(lines)) for j in range(len(lines[i])) if lines[i][j] == 'a']
 for i in range(len(lines)):
     lines[i] = list(lines[i])
     for j in range(len(lines[i])):
-        if lines[i][j] == 'a':
-            starts.append([i, j])
         if lines[i][j] == 'S':
             start = [i, j]
             lines[i][j] = 'a'
@@ -16,8 +14,8 @@ for i in range(len(lines)):
             end = [i, j]
             lines[i][j] = 'z'
 
+dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 def bfs(start):
-    dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     visited = set()
     q = [start]
     level = 0
@@ -30,27 +28,18 @@ def bfs(start):
             currchar = ord(lines[cur[0]][cur[1]])
             for d in dirs:
                 new = [cur[0] + d[0], cur[1] + d[1]]
-                # check inbounds
                 if new[0] >= 0 and new[0] < len(lines) and new[1] >= 0 and new[1] < len(lines[0]):
                     otherchar = ord(lines[new[0]][new[1]])
                     if tuple(new) not in visited and (otherchar - currchar <= 1):
                         q.append(new)
                         visited.add(tuple(new))
-        # grid the size of the matrix lines
-        matrix = [[0 for _ in range(len(lines[0]))] for _ in range(len(lines))]
-        # for every visited nod, mark it as 1 in matrix
-        for v in visited:
-            matrix[v[0]][v[1]] = 1
-        # print the matrix
-        # for row in matrix:
-        #     print(row)
         level += 1
     return level
-print("Part one:", bfs(start))
+    
 result = 10**9
-for start in starts:
-    # print(count)
-    result = min(result, bfs(start))
+for new_start in starts:
+    result = min(result, bfs(new_start))
+print("Part one:", bfs(start))
 print("Part two:", result)
 
 
