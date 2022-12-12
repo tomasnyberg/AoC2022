@@ -8,9 +8,9 @@ grid[start[0]][start[1]] = 'a'
 grid[end[0]][end[1]] = 'z'
 
 dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-def bfs(start, end, p2=False):
-    def good_check(p2, curr, other):
-        return (p2 and (other - curr >= -1)) or (not p2 and other - curr <= 1)
+def bfs(start, end, part_two=False):
+    def good_check(part_two, curr, other):
+        return (part_two and (other - curr >= -1)) or (not part_two and other - curr <= 1)
     visited = set()
     q = [start]
     level = 0
@@ -18,13 +18,14 @@ def bfs(start, end, p2=False):
         for _ in range(len(q)):
             cur = q.pop(0)
             currchar = ord(grid[cur[0]][cur[1]])
-            if p2 and currchar == 97: return level
+            if part_two and currchar == 97:
+                return level
             for d in dirs:
                 new = (cur[0] + d[0], cur[1] + d[1])
                 if 0 <= new[0] < len(grid) and 0 <= new[1] < len(grid[0]):
                     otherchar = ord(grid[new[0]][new[1]])
                     if new not in visited:
-                        if good_check(p2, currchar, otherchar):
+                        if good_check(part_two, currchar, otherchar):
                             q.append(new)
                             visited.add(new)
         level += 1
