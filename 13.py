@@ -12,7 +12,7 @@ def score(a, b):
 
 pkts = [list(map(eval, pair.split("\n"))) for pair in sys.stdin.read().split("\n\n")]
 pkts = [item for sublist in pkts for item in sublist] + [[[2]], [[6]]]
-p1res = sum((i//2) + 1 if score(pkts[i-1], pkts[i]) == 1 else 0 for i in range(1, len(pkts) - 2, 2))
+p1res = sum(i//2+1 for i in range(1, len(pkts)-2, 2) if score(pkts[i-1], pkts[i])==1)
 pkts = sorted(pkts, key=functools.cmp_to_key(lambda a, b: -score(a, b)))
 p2res = 1 * (pkts.index([[2]]) + 1) * (pkts.index([[6]]) + 1)
 
