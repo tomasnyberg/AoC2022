@@ -1,46 +1,38 @@
 import sys, re
 lines = list(map(str.strip, sys.stdin.readlines()))
 
-matrix = [[0 for i in range(1000)] for j in range(1000)]
-all_lines = []
+matrix = set()
 for line in lines:
     split = line.split(" -> ")
-    currline = []
+    prev = None
     for s in split:
-        currline.append(list(map(int, re.findall(r'\d+', s))))
-    all_lines.append(currline)
-max_y = 0
-for line in all_lines:
-    for i in range(1, len(line)):
-        x1, y1 = line[i-1]
-        x2, y2 = line[i]
-        max_y = max(max_y, y1, y2)
-        for x in range(min(x1, x2), max(x1, x2)+1):
-            for y in range(min(y1, y2), max(y1, y2)+1):
-                matrix[y][x] = 1
-
-for i in range(len(matrix[max_y+2])):
-    matrix[max_y+2][i] = 1
+        x, y = list(map(int, re.findall(r'\d+', s)))
+        if prev is not None:
+            for i in range(min(prev[0], x), max(prev[0], x)+1):
+                for j in range(min(prev[1], y), max(prev[1], y)+1):
+                    matrix.add((j, i))
+        prev = (x, y)
+max_y = max(x for x, y in matrix) + 2
+for i in range(50000):
+    matrix.add((max_y, i))
+# def print_matrix():
+#     for i in range(13):
+#         print("".join("#" if (i, j) in matrix else "." for j in range(490, 510)))
 def sand():
-    r = 0
-    c = 500
-    if matrix[r][c] == 1:
-        return True
-    while r < 999:
-        # print(r, c)
-        if matrix[r+1][c] == 0:
-            r+=1
+    p = [0, 500]
+    if tuple(p) in matrix: return True
+    while p[0] < 999:
+        broken = False
+        for dj in [0, -1, 1]:
+            if (p[0]+1, p[1]+dj) not in matrix:
+                p[0]+=1
+                p[1]+=dj
+                broken = True
+                break
+        if broken: 
             continue
-        if matrix[r+1][c-1] == 0:
-            c-=1
-            continue
-        if matrix[r+1][c+1] == 0:
-            c+=1
-            continue
-        matrix[r][c] = 1
-        break
-    if r > 980:
-        return True
+        matrix.add(tuple(p))
+        return False
 
 def solve():
     for i in range(100000):
