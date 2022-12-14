@@ -15,7 +15,7 @@ max_y = max(x for x, y in matrix) + 2
 for i in range(50000):
     matrix.add((max_y, i))
 
-def sand():
+def sand(part_one, matrix):
     p = [0, 500]
     if tuple(p) in matrix: return True
     while p[0] < 999:
@@ -28,12 +28,15 @@ def sand():
                 break
         if broken: 
             continue
+        if part_one and p[0] >= max_y-1: return True
         matrix.add(tuple(p))
         return False
 
-def solve():
+def solve(part_one):
+    newmatrix = set(matrix)
     for i in range(100000):
-        if sand():
+        if sand(part_one, newmatrix):
             return i
 
-print("Part two:", solve())
+print("Part one:", solve(True))
+print("Part two:", solve(False))
