@@ -19,15 +19,15 @@ def part_one():
     return result
 
 def part_two():
-    uplines = set()
-    downlines = set()
+    # Get all the lines of the diamond surrounding a scanner.
+    uplines, downlines = set(), set()
     for((x,y), d) in scanners.items():
-        uplines.add(y-x+d+1)
-        uplines.add(y-x-d-1)
-        downlines.add(y+x+d+1)
-        downlines.add(y+x-d-1)
-
+        uplines |= set([y-x+d+1, y-x-d-1])
+        downlines |= set([y+x+d+1,y+x-d-1])
     bound = 4000000
+    # For every line going up and down, find where they intersect.
+    # If all the scanners are further away from the intersection than their distance
+    # to their nearest scanner, that is our answer.
     for up in uplines:
         for down in downlines:
             intersect = ((down-up)//2, (down + up)//2)
