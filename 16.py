@@ -51,27 +51,38 @@ def solve():
     for i in range(len(candidates)):
         d = pairwise["AA"][candidates[i]]
         dp[d+1][i][1 << i] = 0
+    # dp[i][k][j] = max score we can get if we are at node k at time i with mask j
+    # Go through every minute
     for i in range(1, 31):
+        # Go through every possible mask
         for j in range(1 << len(candidates)):
+            # Go through every possible point to be at
             for k in range(len(candidates)):
+                # If this is not a node we want to open, just skip
+                if ((1 << k & j) == 0):
+                    continue
                 f = flow(j)
                 # We can choose to just stay where we are and not do anything
                 hold = dp[i-1][k][j] + f
-                if hold > dp[i][k][j]:
-                    dp[i][k][j] = hold
+                dp[i][k][j] = max(hold, dp[i][k][j])
                 ans = max(ans, dp[i][k][j])
-                if ((1 << k & j) == 0):
-                    continue
-                # For every other node that has positive flow, we can move to it
+                # Check every other node and decide if we want to move there
                 for l in range(len(candidates)):
+                    # This node is not one we want open, skip
                     if(((1 << l) & j) != 0):
                         continue
                     d = pairwise[candidates[k]][candidates[l]]
+                    # We won't get to this node in time so don't check it
                     if i + d + 1 >= 31:
                         continue
+                    # If doing what we have so far and then moving to that node is 
+                    # better than what we have so far for being at that node at that time 
+                    # with those nodes active, update it
                     val = dp[i][k][j] + f*(d+1)
                     if val > dp[i+d+1][l][j | (1 << l)]:
                         dp[i+d+1][l][j | (1 << l)] = val
+    # We can reuse our p1 dp array for p2,
+    # we just need to find the best way to split the mask into two parts
     for i in range(1 << len(candidates)):
         for j in range(1 << len(candidates)):
             if (i & j) != j:
@@ -80,6 +91,7 @@ def solve():
             elephant = -10**9
             for k in range(len(candidates)):
                 me = max(me, dp[26][k][j])
+            # The elephant takes all the valves that I don't take
             for k in range(len(candidates)):
                 elephant = max(elephant, dp[26][k][i& ~j])
             ans2 = max(ans2, me+elephant)
