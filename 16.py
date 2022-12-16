@@ -91,7 +91,8 @@ def solve():
             elephant = -10**9
             for k in range(len(candidates)):
                 me = max(me, dp[26][k][j])
-            # The elephant takes all the valves that I don't take
+            # The elephant takes its own valves, but skips ones that i have already taken
+            # (which we get from i&~j)
             for k in range(len(candidates)):
                 elephant = max(elephant, dp[26][k][i& ~j])
             ans2 = max(ans2, me+elephant)
