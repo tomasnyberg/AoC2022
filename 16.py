@@ -6,7 +6,6 @@ candidates = []
 for line in lines:
     split = line.split(" ")
     curr = split[1]
-    # Find the integer in the line with regex
     num = int(re.findall(r'-?\d+', line)[0])
     to_list = ""
     if "valves" in line:
@@ -36,7 +35,6 @@ pairwise = {}
 for node in adj_lists:
     pairwise[node] = {}
     bfs(node, pairwise)
-print(pairwise)
 
 def flow(mask):
     result = 0
@@ -54,20 +52,20 @@ def solve():
         d = pairwise["AA"][candidates[i]]
         dp[d+1][i][1 << i] = 0
     for i in range(1, 31):
-        print(i)
         for j in range(1 << len(candidates)):
             for k in range(len(candidates)):
                 f = flow(j)
+                # We can choose to just stay where we are and not do anything
                 hold = dp[i-1][k][j] + f
                 if hold > dp[i][k][j]:
                     dp[i][k][j] = hold
                 ans = max(ans, dp[i][k][j])
                 if ((1 << k & j) == 0):
                     continue
+                # For every other node that has positive flow, we can move to it
                 for l in range(len(candidates)):
                     if(((1 << l) & j) != 0):
                         continue
-                    # find the distance between k and l
                     d = pairwise[candidates[k]][candidates[l]]
                     if i + d + 1 >= 31:
                         continue
@@ -87,5 +85,6 @@ def solve():
             ans2 = max(ans2, me+elephant)
     return (ans, ans2)
 
-# Guessed 2403, too low
-print(solve())
+answers = solve()
+print("Part one:", answers[0])
+print("Part two:", answers[1])
