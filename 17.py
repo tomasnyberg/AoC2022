@@ -78,6 +78,68 @@ def check_down(i, center):
     else:
         print(i)
         raise Exception("Invalid i")
+
+def check_side(i, center, dir):
+    row, col = center
+    if i == 0:
+        if dir == '<':
+            if col - 3 > 0 and grid[row][col-4] == 0:
+                return [row, col-1]
+            else:
+                return [row, col]
+        elif dir == '>':
+            if col + 1 < len(grid[0]) and grid[row][col+1] == 0:
+                return [row, col+1]
+            else:
+                return [row, col]
+    elif i == 1:
+        if dir == '<':
+            if col - 1 > 0 and grid[row][col-2] == 0 and grid[row+1][col-1] == 0 and grid[row-1][col-1] == 0:
+                return [row, col-1]
+            else:
+                return [row, col]
+        elif dir == '>':
+            if col + 2 < len(grid[0]) and grid[row][col+2] == 0 and grid[row+1][col+1] == 0 and grid[row-1][col+1] == 0:
+                return [row, col+1]
+            else:
+                return [row, col]
+    elif i == 2:
+        if dir == '<':
+            if col - 2 > 0 and grid[row][col-3] == 0 and grid[row-1][col-1] == 0 and grid[row-2][col-1] == 0:
+                return [row, col-1]
+            else:
+                return [row, col]
+        elif dir == '>':
+            if col + 1< len(grid[0]) and grid[row][col+1] == 0 and grid[row-1][col+1] == 0 and grid[row-2][col+1] == 0:
+                return [row, col+1]
+            else:
+                return [row, col]
+    elif i == 3:
+        if dir == '<':
+            # THIS LINE COULD BE WRONG
+            if col - 1 > 0 and all(grid[newrow][col-1] == 0 for newrow in range(row-3, row+1)):
+                return [row, col-1]
+            else:
+                return [row, col]
+        elif dir == '>':
+            if col + 1 < len(grid[0]) and all(grid[newrow][col+1] == 0 for newrow in range(row-3, row+1)):
+                return [row, col+1]
+            else:
+                return [row, col]
+    elif i == 4:
+        if dir == '<':
+            if col - 1 > 0 and grid[row][col-2] == 0 and grid[row-1][col-2] == 0:
+                return [row, col-1]
+            else:
+                return [row, col]
+        elif dir == '>':
+            if col + 1 < len(grid[0]) and grid[row][col+1] == 0 and grid[row-1][col+1] == 0:
+                return [row, col+1]
+            else:
+                return [row, col]
+    else:
+        print(i)
+        raise Exception("Invalid i")
 # Not 100% sure about these
 startposes = {0: [0, 5], 1: [1,3], 3: [3, 2], 2:[2,4], 4:[1, 3]}
 
@@ -86,13 +148,28 @@ def print_grid():
         print(''.join(['#' if x == 1 else '.' for x in row]))
     print("-------------")
 
+highest = len(grid) - 1
+diridx = 0
 for i in range(10):
     startpos = startposes[i % 5]
+    startpos[0] = highest - 3
     print(startpos)
+    print_grid()
     while True:
+        startpos = check_side(i%5, startpos, dirs[diridx])
+        diridx+=1
+        diridx %= len(dirs)
         newpos = check_down(i%5, startpos)
         if newpos == startpos:
-            print_grid()
+            imodded = i % 5
+            if imodded == 0:
+                highest = min(highest, startpos[0])
+            elif imodded == 1 or imodded == 4:
+                highest = min(highest, startpos[0] - 1)
+            elif imodded == 2:
+                highest = min(highest, startpos[0] - 2)
+            elif imodded == 3:
+                highest = min(highest, startpos[0] - 3)
             break
         else:
             startpos = newpos
