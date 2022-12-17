@@ -23,7 +23,7 @@ dirs = lines[0]*1000
 print(len(dirs))
 
 # 7 units wide, 100 tall grid
-grid = [[0 for _ in range(7)] for _ in range(100)]
+grid = [[0 for _ in range(7)] for _ in range(100000)]
 for xs in (grid[-5:]):
     print(xs)
 
@@ -148,14 +148,15 @@ def print_grid():
         print(''.join(['#' if x == 1 else '.' for x in row]))
     print("-------------")
 
-highest = len(grid) - 1
+highest = len(grid)
 diridx = 0
-for i in range(10):
+for i in range(2022):
     startpos = startposes[i % 5]
-    startpos[0] = highest - 3
-    print(startpos)
-    print_grid()
+    startpos[0] = highest - 4
+    if i % 5 == 1:
+        startpos[0] -= 1
     while True:
+        # print(startpos, "asdlfk")
         startpos = check_side(i%5, startpos, dirs[diridx])
         diridx+=1
         diridx %= len(dirs)
@@ -170,7 +171,11 @@ for i in range(10):
                 highest = min(highest, startpos[0] - 2)
             elif imodded == 3:
                 highest = min(highest, startpos[0] - 3)
+            # print_grid()
             break
         else:
             startpos = newpos
+print(len(grid) - highest)
+
+# guessed 3272, too high
 
