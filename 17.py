@@ -3,20 +3,18 @@ lines = list(map(str.strip, sys.stdin.readlines()))
 
 dirs = lines[0]
 def generate_pieces(i, row):
-    positions = []
     if i == 0:
-        positions = ((2,row), (3,row), (4,row), (5,row))
+        return set([(2,row), (3,row), (4,row), (5,row)])
     elif i == 1:
-        positions = ((3,row), (3,row-1), (3, row-2), (2, row-1), (4, row-1))
+        return set([(3,row), (3,row-1), (3, row-2), (2, row-1), (4, row-1)])
     elif i == 2:
-        positions = ((2,row), (3,row), (4,row), (4, row-1), (4, row-2))
+        return set([(2,row), (3,row), (4,row), (4, row-1), (4, row-2)])
     elif i == 3:
-        positions = ((2,row), (2,row-1), (2,row-2), (2,row-3))
+        return set([(2,row), (2,row-1), (2,row-2), (2,row-3)])
     elif i == 4:
-        positions = ((2,row), (3,row), (2,row-1), (3,row-1))
+        return set([(2,row), (3,row), (2,row-1), (3,row-1)])
     else:
         assert(False)
-    return set(positions)
 
 grid = [[0 for _ in range(7)] for _ in range(5000)]
 
@@ -34,14 +32,6 @@ def move_side(piece, dir):
         return set((x+dx, y) for x, y in piece)
     else:
         return piece
-
-def draw_intermediate(grid, piece):
-    grid = [list(xs) for xs in grid]
-    for x, y in piece:
-        grid[y][x] = 1
-    for xs in grid[-10:]:
-        print("".join("#" if x == 1 else "." for x in xs))
-    print("\n")
 
 def signature(streamidx, rockidx, grid, height):
     return (streamidx, rockidx, tuple(tuple(xs) for xs in grid[height:height+10]))
@@ -80,9 +70,3 @@ def find_first():
     print("Part two:", additional+ len(grid) - highest)
 
 find_first()
-# print(len(grid) - highest)
-
-
-        
-
-
