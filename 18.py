@@ -9,10 +9,8 @@ for line in lines:
 dirs = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
 result = 0
 for x, y, z in coordinates:
-    for dx, dy, dz in dirs:
-        if (x + dx, y + dy, z + dz) not in coordinates:
-            result += 1
-            
+    result += sum([1 for dx, dy, dz in dirs if (x + dx, y + dy, z + dz) not in coordinates])
+    
 visited = set()
 result2 = set()
 q = [(0, 0, 0)]
