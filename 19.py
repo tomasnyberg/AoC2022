@@ -29,6 +29,15 @@ def generate_states(state):
         s[8] -= 1
     return new_states
 
+def prune(state, maxore, obsidian_clay, geode_obsidian):
+    state = list(state)
+    orecurr,clay_curr,obcurr,geodecurr,oremachine,claymachine,obsidianmachine,geodemachine,time = state
+    for i, compare in [[4, maxore], [5, obsidian_clay], [6, geode_obsidian]]:
+        state[i] = min(compare, state[i])
+    for i, comp in [[0, maxore - state[4]], [1, obsidian_clay - state[5]], [2, geode_obsidian - state[6]]]:
+        state[i] = min(time*comp*(time-1), state[i])
+    return tuple(state)
+
 def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsidian, start_time):
     best = 0
     starting = (0, 0, 0, 0, 1, 0, 0, 0, start_time)
@@ -42,12 +51,7 @@ def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsid
         best = max(best, geodecurr)
         if time==0: continue
         maxore = max([ore_cost, clay_cost, obsidian_ore, geode_ore])
-        state = list(state)
-        for i, compare in [[4, maxore], [5, obsidian_clay], [6, geode_obsidian]]:
-            state[i] = min(compare, state[i])
-        for i, comp in [[0, maxore - state[4]], [1, obsidian_clay - state[5]], [2, geode_obsidian - state[6]]]:
-            state[i] = min(time*comp*(time-1), state[i])
-        state = tuple(state)
+        state = prune(state, maxore, obsidian_clay, geode_obsidian)
         if state in seen: continue
         seen.add(state)
         new_states = generate_states(state)
