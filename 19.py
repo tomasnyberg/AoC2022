@@ -13,6 +13,13 @@ def heur(state):
     ore, clay, obsidian, geodes, _, _, _, _, _ = state
     return 1000*geodes + 100*obsidian + 10*clay + ore
 
+def apply_heuristic(time, depth, queue):
+    if time < depth:
+        queue = deque(sorted(queue, key=heur, reverse=True))
+        queue = deque(list(queue)[:70000])
+        depth = time
+    return depth, queue
+
 def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsidian, start_time):
     best = 0
     starting = (0, 0, 0, 0, 1, 0, 0, 0, start_time)
@@ -22,10 +29,7 @@ def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsid
     while queue:
         state = queue.popleft()
         orecurr,clay_curr,obcurr,geodecurr,oremachine,claymachine,obsidianmachine,geodemachine,time = state
-        if time < depth:
-            queue = deque(sorted(queue, key=heur, reverse=True))
-            queue = deque(list(queue)[:500000])
-            depth = time
+        depth, queue = apply_heuristic(time, depth, queue)
         best = max(best, geodecurr)
         if time==0: continue
         maxore = max([ore_cost, clay_cost, obsidian_ore, geode_ore])
@@ -66,8 +70,8 @@ def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsid
     print(best)
     return best
 
-result = 1
-for idx, line in enumerate(lines[:3]):
+result = 0
+for idx, line in enumerate(lines):
     idx, orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian = map(int, re.findall(r'\d+', line))
-    result *= (bfs(orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian, 32))
+    result += (bfs(orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian, 24))
 print(result)
