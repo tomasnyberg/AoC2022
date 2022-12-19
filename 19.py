@@ -13,15 +13,15 @@ def heur(state):
     ore, clay, obsidian, geodes, _, _, _, _, _ = state
     return 1000*geodes + 100*obsidian + 10*clay + ore
 
-def apply_heuristic(time, depth, queue):
+def apply_heuristic(time, depth, queue, heur_size):
     if time < depth:
         queue = deque(sorted(queue, key=heur, reverse=True))
-        queue = deque(list(queue)[:70000])
+        queue = deque(list(queue)[:heur_size])
         depth = time
     return depth, queue
 
 def new_states(state, costs, oldstate, queue):
-    orecurr,clay_curr,obcurr,geodecurr,oremachine,claymachine,obsidianmachine,geodemachine,time = oldstate
+    orecurr, clay_curr, obcurr, _, oremachine, claymachine, obsidianmachine, _, _ = oldstate
     ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsidian = costs
     new_states = [list(state) for _ in range(5)]
     for i in range(4):
@@ -51,7 +51,7 @@ def prune(state, maxore, obsidian_clay, geode_obsidian):
         state[i] = min(state[-1]*comp*(state[-1]-1), state[i])
     return tuple(state)
 
-def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsidian, start_time):
+def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsidian, start_time, heur_size):
     best = 0
     starting = (0, 0, 0, 0, 1, 0, 0, 0, start_time)
     queue = deque([starting])
@@ -61,7 +61,7 @@ def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsid
         state = queue.popleft()
         geodecurr,time = state[3], state[-1]
         oldstate = state[:]
-        depth, queue = apply_heuristic(time, depth, queue)
+        depth, queue = apply_heuristic(time, depth, queue, heur_size)
         best = max(best, geodecurr)
         if time==0: continue
         maxore = max([ore_cost, clay_cost, obsidian_ore, geode_ore])
@@ -73,8 +73,13 @@ def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsid
     print(best)
     return best
 
-result = 0
+part_one = 0
+part_two = 1
 for idx, line in enumerate(lines):
     idx, orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian = map(int, re.findall(r'\d+', line))
-    result += idx*(bfs(orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian, 24))
-print(result)
+    if idx < 4:
+        part_two *= bfs(orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian, 32, 500000)
+    part_one += idx*(bfs(orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian, 24, 70000))
+
+print("Part one:", part_one)
+print("Part two:", part_two)
