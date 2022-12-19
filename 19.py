@@ -20,6 +20,15 @@ def apply_heuristic(time, depth, queue):
         depth = time
     return depth, queue
 
+def generate_states(state):
+    new_states = [list(state) for _ in range(5)]
+    for i in range(4):
+        for s in new_states:
+            s[i] += s[i+4]
+    for s in new_states:
+        s[8] -= 1
+    return new_states
+
 def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsidian, start_time):
     best = 0
     starting = (0, 0, 0, 0, 1, 0, 0, 0, start_time)
@@ -33,24 +42,15 @@ def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsid
         best = max(best, geodecurr)
         if time==0: continue
         maxore = max([ore_cost, clay_cost, obsidian_ore, geode_ore])
+        state = list(state)
         for i, compare in [[4, maxore], [5, obsidian_clay], [6, geode_obsidian]]:
-            new_state = list(state)
-            new_state[i] = min(compare, state[i])
-            state = tuple(new_state)
-        orecurr,clay_curr,obcurr,geodecurr,oremachine,claymachine,obsidianmachine,geodemachine,time = state
-        for i, comp in [[0, maxore - oremachine], [1, obsidian_clay - claymachine], [2, geode_obsidian - obsidianmachine]]:
-            new_state = list(state)
-            new_state[i] = min(time*comp*(time-1), state[i])
-            state = tuple(new_state)
+            state[i] = min(compare, state[i])
+        for i, comp in [[0, maxore - state[4]], [1, obsidian_clay - state[5]], [2, geode_obsidian - state[6]]]:
+            state[i] = min(time*comp*(time-1), state[i])
+        state = tuple(state)
         if state in seen: continue
         seen.add(state)
-        # Make 5 copies of state
-        new_states = [list(state) for _ in range(5)]
-        for i in range(4):
-            for s in new_states:
-                s[i] += s[i+4]
-        for s in new_states:
-            s[8] -= 1
+        new_states = generate_states(state)
         queue.append(tuple(new_states[0]))
         orebase = orecurr + oremachine
         claybase = clay_curr + claymachine
@@ -73,5 +73,5 @@ def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsid
 result = 0
 for idx, line in enumerate(lines):
     idx, orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian = map(int, re.findall(r'\d+', line))
-    result += (bfs(orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian, 24))
+    result += idx*(bfs(orecost, claycost, obsidianore, obsidianclay, geodeore, geodeobsidian, 24))
 print(result)
