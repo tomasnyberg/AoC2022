@@ -2,13 +2,7 @@ import sys, re
 lines = list(map(str.strip, sys.stdin.readlines()))
 from collections import defaultdict, deque
 
-# Each robot can collect 1 of its resource type per minute. 
-# It also takes one minute for the robot factory (also conveniently from your pack) 
-# to construct any type of robot, although it consumes the necessary
-#  resources available when construction begins.
-# 24 minutes
-
-# Heuristic weighted for geodes
+# Heuristic weighted for the higher value items
 def heur(state):
     ore, clay, obsidian, geodes, _, _, _, _, _ = state
     return 1000*geodes + 100*obsidian + 10*clay + ore
@@ -70,7 +64,6 @@ def bfs(ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsid
         seen.add(state)
         costs = [ore_cost, clay_cost, obsidian_ore, obsidian_clay, geode_ore, geode_obsidian]
         new_states(state, costs, oldstate, queue)
-    print(best)
     return best
 
 part_one = 0
