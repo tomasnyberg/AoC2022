@@ -1,13 +1,12 @@
 import sys, re
 lines = list(map(str.strip, sys.stdin.readlines()))
-from collections import defaultdict, deque
-
-# Heuristic weighted for the higher value items
-def heur(state):
-    ore, clay, obsidian, geodes, _, _, _, _, _ = state
-    return 1000*geodes + 100*obsidian + 10*clay + ore
+from collections import deque
 
 def apply_heuristic(time, depth, queue, heur_size):
+    # Heuristic weighted for the higher value items
+    def heur(state):
+        ore, clay, obsidian, geodes, _, _, _, _, _ = state
+        return 1000*geodes + 100*obsidian + 10*clay + ore
     if time < depth:
         queue = deque(sorted(queue, key=heur, reverse=True))
         queue = deque(list(queue)[:heur_size])
@@ -23,6 +22,12 @@ def new_states(state, costs, oldstate, queue):
             s[i] += s[i+4]
     for s in new_states:
         s[8] -= 1
+    if orecurr >= geode_ore and obcurr >= geode_obsidian:
+        new_states[4][0] = orecurr + oremachine - geode_ore
+        new_states[4][2] = obcurr + obsidianmachine - geode_obsidian
+        new_states[4][7] += 1
+        queue.append(tuple(new_states[4]))
+        return
     for i, pred, costs, add in [[0, True, [0,0,0], [0,0,0,0]],
                                 [1, orecurr >= ore_cost, [ore_cost,0,0], [1,0,0,0]],
                                 [2, orecurr >= clay_cost, [clay_cost, 0,0], [0,1,0,0]],
