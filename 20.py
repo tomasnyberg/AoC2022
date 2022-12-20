@@ -1,18 +1,15 @@
 import sys, re
 lines = list(map(str.strip, sys.stdin.readlines()))
 
-nums = []
-for idx, line in enumerate(lines):
-    nums.append((int(line)*811589153, idx))
-n = len(nums)
-original = nums[:]
+nums= [(int(line)*811589153, idx) for idx, line in enumerate(lines)]
+n, original = len(nums), nums[:]
 
 def move(nums, i):
     x, idx = nums[i]
     nums.pop(i)
     nums.insert((i + x) % (n-1), (x, idx))
 
-for _ in range(10):
+for round in range(10):
     for x, idx in original:
         i = nums.index((x, idx))
         move(nums, i)
