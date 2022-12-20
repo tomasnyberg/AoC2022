@@ -17,12 +17,5 @@ for _ in range(10):
         i = nums.index((x, idx))
         move(nums, i)
 
-zeroindex = 0
-for i in range(n):
-    if nums[i][0] == 0:
-        zeroindex = i
-        break
-total = 0
-for x in [1000, 2000, 3000]:
-    total += nums[(zeroindex+x)%(n)][0]
-print(total)
+zeroindex = [x for x, _ in nums].index(0)
+print("Part two:", sum([nums[(zeroindex+x)%(n)][0] for x in [1000, 2000, 3000]]))
