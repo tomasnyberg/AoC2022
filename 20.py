@@ -4,32 +4,25 @@ KEY = 811589153
 
 nums = []
 for idx, line in enumerate(lines):
-    nums.append((int(line)*KEY, idx, False))
+    nums.append((int(line)*KEY, idx))
 n = len(nums)
 
 original = nums[:]
 
 def move(nums, i):
-    x = nums[i][0]
-    nums[i] = (x, i, True)
+    x, idx = nums[i]
+    # nums[i] = (x, i)
     nums.pop(i)
     new = (i + x) % (n-1)
-    nums.insert(new, (x, i, True))
+    nums.insert(new, (x, idx))
 
 for _ in range(10):
-    print([nums[i][0] for i in range(len(nums))])
-    while True:
-        moved = False
-        for i in range(len(nums)):
-            if not nums[i][2]:
-                move(nums, i)
-                moved = True
-                break
-        if not moved:
-            break
-    for i in range(len(nums)):
-        nums[i] = (nums[i][0], nums[i][1], False)
-    print([nums[i][0] for i in range(len(nums))])
+    print([nums[i] for i in range(len(nums))])
+    for x, idx in original:
+        # print("moving", idx)
+        i = nums.index((x, idx))
+        move(nums, i)
+    print([nums[i] for i in range(len(nums))])
     print()
 
 zeroindex = 0
