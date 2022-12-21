@@ -21,7 +21,14 @@ def attempt_eval(num, known, unknown):
             if a in known and b in known:
                 if name == 'root':
                     print("EVALUATING ROOT", num, known[a], known[b])
-                    return known[a] == known[b]
+                    return known[a] > known[b]
+                    # if known[a] > known[b]:
+                    #     return -1
+                    # if known[a] == known[b]:
+                    #     return 0
+                    # if known[a] < known[b]:
+                    #     return 1
+                    # return known[a] == known[b]
                 a = str(known[a])
                 b = str(known[b])
                 known[name] = eval(a + operation + b)
@@ -36,17 +43,36 @@ def attempt_eval(num, known, unknown):
             del unknown[name]
     
 
+print(attempt_eval(0, known.copy(), unknown.copy()))
 
 
-for i in range(10000):
-    # copy known and unknown
-    known_copy = known.copy()
-    unknown_copy = unknown.copy()
-    if attempt_eval(i, known_copy, unknown_copy):
-        print("FOUND", i)
-        break
-print(known)
-print(unknown)
-print(known['root'])
+print(attempt_eval(3272260914328, known.copy(), unknown.copy()))
+
+
+# Making human bigger makes a smaller
+def bs():
+    low = 0
+    high = 10000000000000
+    while low < high:
+        mid = (low + high) // 2
+        res = attempt_eval(mid, known.copy(), unknown.copy())
+        if res:
+            low = mid + 1
+        else:
+            high = mid
+    return low + 1
+
+# print(bs())
+
+# for i in range(10000):
+#     # copy known and unknown
+#     known_copy = known.copy()
+#     unknown_copy = unknown.copy()
+#     if attempt_eval(i, known_copy, unknown_copy):
+#         print("FOUND", i)
+#         break
+# print(known)
+# print(unknown)
+# print(known['root'])
 
 
