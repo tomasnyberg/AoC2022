@@ -1,4 +1,4 @@
-import sys
+import sys, math
 lines = list(map(str.strip, sys.stdin.readlines()))
 
 def topological_sort(n, adj_lists):
@@ -35,41 +35,27 @@ def attempt_eval(num, known, unknown, part_two, topsort):
         if name in known:
             continue
         a, operation, b = unknown[name].split()
+        if part_two and name == 'root':
+            return known[a] >= known[b]
         a = str(known[a])
         b = str(known[b])
         known[name] = eval(a + operation + b)
     return known['root']
-res = attempt_eval(known['humn'], known.copy(), unknown.copy(), True, topological_sort(len(adj_lists), adj_lists))
-print(res)
-    # while True:
-    #     to_del = []
-    #     for name, val in unknown.items():
-    #         a, operation, b = val.split()
-    #         if a in known and b in known:
-    #             if name == 'root' and part_two:
-    #                 return known[a] >= known[b]
-    #             a = str(known[a])
-    #             b = str(known[b])
-    #             known[name] = eval(a + operation + b)
-    #             to_del.append(name)
-    #         else:
-    #             continue
-    #     if not to_del:
-    #         break
-    #     for name in to_del:
-    #         del unknown[name]
-    # return known['root']
-    
+
 def bs():
     low = 0
     high = 10000000000000
     while low < high:
         mid = (low + high) // 2
-        res = attempt_eval(mid, known.copy(), unknown.copy(), True)
+        res = attempt_eval(mid, known.copy(), unknown.copy(), True, ts)
         if res:
             low = mid + 1
         else:
             high = mid
     return low - 1
 
-# print(bs())
+res = attempt_eval(known['humn'], known.copy(), unknown.copy(), False, topological_sort(len(adj_lists), adj_lists))
+ts = topological_sort(len(adj_lists), adj_lists)
+
+print("Part one:", math.floor(res))
+print("Part two:", bs())
