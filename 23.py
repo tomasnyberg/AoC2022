@@ -17,26 +17,21 @@ for i in range(100):
     grid.append(['.']*len(grid[0]))
 
 triplets = deque([[(-1,0), (-1,-1), (-1, 1)], [(1, 0), (1,1), (1,-1)], [(0, -1), (-1, -1), (1, -1)], [(0, 1), (-1, 1), (1, 1)]])
+
 def round():
+    def empty_around_check(i, j, directions):
+        for di, dj in directions:
+            if 0 <= i+di < len(grid) and 0 <= j+dj < len(grid[i+di]):
+                if grid[i+di][j+dj] == '#':
+                    return False
+        return True
     proposed = {}
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             if grid[i][j] == '#':
-                count = 0
-                for di, dj in dirs8:
-                    if 0 <= i+di < len(grid) and 0 <= j+dj < len(grid[i+di]):
-                        if grid[i+di][j+dj] == '#':
-                            count += 1
-                if count == 0: continue
+                if empty_around_check(i, j, dirs8): continue
                 for triplet in triplets:
-                    count = 0
-                    for di, dj in triplet:
-                        if 0 <= i+di < len(grid) and 0 <= j+dj < len(grid[i]):
-                            if grid[i+di][j+dj] == '#':
-                                count += 1
-                        else:
-                            count += 1
-                    if count == 0:
+                    if empty_around_check(i, j, triplet):
                         new = (i + triplet[0][0], j + triplet[0][1])
                         if new not in proposed: proposed[new] = []
                         proposed[new].append((i, j))
