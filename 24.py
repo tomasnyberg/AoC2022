@@ -9,12 +9,7 @@ grid = list(map(list, lines))
 blizzarddirs = {'<': (0, -1), '>': (0, 1), '^': (-1, 0), 'v': (1, 0)}
 
 def simulate(grid, blizzards):
-    new_grid = []
     new_blizzards = {}
-    for i in range(len(grid)):
-        new_grid.append([])
-        for j in range(len(grid[i])):
-            new_grid[i].append(grid[i][j])
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             if (i, j) in blizzards:
@@ -34,14 +29,8 @@ def solve():
     in_q = set([(0, 1)])
     count = 0
     p1ans = -1
-    p2ans = -1
-    blizzards = {}
-    for i in range(len(grid)):
-        for j in range(len(grid[0])):
-            if grid[i][j] in ['<', '>', '^', 'v']:
-                blizzards[(i, j)] = [grid[i][j]]
-                grid[i][j] = '.'
-    for i in range(1800):
+    blizzards = {(i, j): grid[i][j] for i in range(len(grid)) for j in range(len(grid[0])) if grid[i][j] in ['<', '>', '^', 'v']}
+    for i in range(1000):
         blizzards = simulate(grid, blizzards)
         level += 1
         for _ in range(len(q)):
@@ -55,8 +44,7 @@ def solve():
                 if count == 0:
                     p1ans = level - 1
                 elif count == 2:
-                    p2ans = level - 1
-                    return (p1ans, p2ans)
+                    return (p1ans, level - 1)
                 count += 1
                 q = deque([(len(grid) - 1, len(grid[0]) - 2)])
                 in_q = set([q[0]])
@@ -66,6 +54,7 @@ def solve():
                     q.append([ni, nj])
                     in_q.add((ni, nj))
     assert False
-p1ans, p2ans = solve()                
+    
+p1ans, p2ans = solve()
 print("Part one:", p1ans)
-print("Part two:", p2ans)                
+print("Part two:", p2ans)
