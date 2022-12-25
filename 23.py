@@ -1,13 +1,9 @@
 import sys, re
 lines = list(map(str.strip, sys.stdin.readlines()))
 from collections import deque
-def show(grid):
-    for row in grid:
-        print(''.join(row))
-    print()
 
-dirs8 = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 dirs4 = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+dirs8 = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 
 grid = [list(line) for line in lines]
 for i in range(len(grid)):
@@ -41,8 +37,7 @@ def round():
         if len(xs) > 1: continue
         moved += 1
         grid[i][j] = '#'
-        oi, oj = xs[0]
-        grid[oi][oj] = '.'
+        grid[xs[0][0]][xs[0][1]] = '.'
     return moved == 0
 
 for i in range(1000):
