@@ -59,5 +59,4 @@ for i in range(1000):
     if round():
         print("Part two:", i + 1)
         break
-    x = triplets.popleft()
-    triplets.append(x)
+    triplets.append(triplets.popleft())
